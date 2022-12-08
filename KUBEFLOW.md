@@ -5,11 +5,11 @@
 <!-- toc -->
 
 - [Overview](#overview)
-- [Cluster environment](#Cluster-environment)
+- [Cluster environment](#cluster-environment)
 - [Kubeflow components](#kubeflow-components)
-- [Kubeflow Installation](#installation)
+- [Kubeflow Installation](#kubeflow-installation)
   * [Prerequisites](#prerequisites)
-  * [Kubernetes Installation](#Kubernetes-Installation)
+  * [Kubernetes Installation](#kubernetes-Installation)
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 
@@ -25,8 +25,8 @@ For this project environment we used:
 - 3 Ubuntu 22.04 Servers. 
 - 3 VMs with Intel(R) Core (TM) i7-4790 CPU @ 3.60GHz and 16GB RAM DDR3.
 - `Master node IP:` 192.168.1.74
-- `Master node IP:` 192.168.0.169
-- `Master node IP:` 192.168.1.35
+- `Worker node IP:` 192.168.0.169
+- `Worker node IP:` 192.168.1.35
 
 ## Kubeflow components
 This section introduce every Kubeflow componenets and their utilities.
