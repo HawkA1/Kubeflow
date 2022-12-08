@@ -7,7 +7,7 @@
 - [Overview](#overview)
 - [Cluster environment](#cluster-environment)
 - [Kubeflow components](#kubeflow-components)
-- [Kubeflow Installation](#kubeflow-installation)
+- [Kubeflow Installation](#kubeflow-Installation)
   * [Prerequisites](#prerequisites)
   * [Kubernetes Installation](#kubernetes-Installation)
   * [Install with a single command](#install-with-a-single-command)
@@ -31,4 +31,23 @@ For this project environment we used:
 ## Kubeflow components
 This section introduce every Kubeflow componenets and their utilities.
 
+#### Central Dashboard
+
+#### Kubeflow Notebooks
+
+#### Kubeflow Pipelines
+
+#### Katib
+
+#### Training Operators
+
+#### Elyra
+
+#### Istio
+
+#### Kale
+
+#### KServe
+
+#### Fairing
 
