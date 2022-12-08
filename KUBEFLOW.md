@@ -27,3 +27,8 @@ For this project environment we used:
 - `Master node IP:` 192.168.1.74
 - `Master node IP:` 192.168.0.169
 - `Master node IP:` 192.168.1.35
+
+## Kubeflow components
+This section introduce every Kubeflow componenets and their utilities.
+
+
