@@ -1,0 +1,29 @@
+# Kubeflow Documentation
+
+## Table of Contents
+
+<!-- toc -->
+
+- [Overview](#overview)
+- [Cluster environment](#Cluster-environment)
+- [Kubeflow components](#kubeflow-components)
+- [Kubeflow Installation](#installation)
+  * [Prerequisites](#prerequisites)
+  * [Kubernetes Installation](#Kubernetes-Installation)
+  * [Install with a single command](#install-with-a-single-command)
+  * [Install individual components](#install-individual-components)
+
+<!-- tocstop -->
+
+## Overview
+This documentation is for anyone trying to build a [Kubernetes](https://kubernetes.io/docs/home/) based environment fo machine learning using [Kubeflow](https://www.kubeflow.org/docs/started/introduction/).
+
+The Kubeflow project is dedicated to making deployments of machine learning (ML) workflows on Kubernetes simple, portable and scalable. Kubeflow is a platform for data scientists who want to build and experiment with ML pipelines. Kubeflow is also for ML engineers and operational teams who want to deploy ML systems to various environments for development, testing, and production-level serving.
+
+## Cluster environment
+For this project environment we used:
+- 3 Ubuntu 22.04 Servers. 
+- 3 VMs with Intel(R) Core (TM) i7-4790 CPU @ 3.60GHz and 16GB RAM DDR3.
+- `Master node IP:` 192.168.1.74
+- `Master node IP:` 192.168.0.169
+- `Master node IP:` 192.168.1.35
