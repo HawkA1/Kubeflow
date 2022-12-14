@@ -263,6 +263,12 @@ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storagec
 
 
 ### Install with a single command
+Get the kubeflow repo from [here](https://github.com/kubeflow/manifests#installation).
+```sh
+git clone https://github.com/kubeflow/manifests.git
+cd manifests
+```
+
 You can install all Kubeflow official components (residing under apps) and all common services (residing under common) in [kubeflow manifests repo](https://github.com/kubeflow/manifests#installation) using the following command:
 
 ```sh
