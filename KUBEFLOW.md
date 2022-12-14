@@ -251,10 +251,26 @@ We will be using calico CNI as a network plugin for Kubernetes as we discused ea
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml 
 kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
 ```
- 
+- We also need a default storage class. For that we will be using the manifest file provided by rancher for [storageclass](https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml).
+```sh
+kubectl create -f https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml
+```
+After the creation of the storageclass we need to set it up as a default storageclass:
+
+```sh
+kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
 
 
 ### Install with a single command
+You can install all Kubeflow official components (residing under apps) and all common services (residing under common) in [kubeflow manifests repo](https://github.com/kubeflow/manifests#installation) using the following command:
 
+```sh
+while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
+```
 ### Install individual components
+
+In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
+
+
 
