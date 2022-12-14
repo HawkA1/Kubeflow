@@ -5,6 +5,9 @@
 ##                                            ##
 ################################################
 
+#Kubernetes Version: 1.22
+K8S_VERSION=1.22.10-00
+
 # Perform all these commands on every node
 # Update servers
 sudo apt-get update
@@ -81,7 +84,7 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 
 # Update apt package index, install kubelet, kubeadm and kubectl
 sudo apt-get update 
-sudo apt-get install -y kubelet=1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00 
+sudo apt-get install -y kubelet=$K8S_VERSION kubeadm=$K8S_VERSION kubectl=$K8S_VERSION
 
 
 
