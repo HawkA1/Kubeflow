@@ -100,6 +100,7 @@ The following are the goals of the Kubeflow Fairing project:
 This section is about kubeflow components installation. We will discuss every aspect in this process.
 
 ### Prerequisites
+- :warning: Kubeflow can only be installed on a Kubernetes cluster.
 - `Kubernetes` (up to `1.22`) with a default [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 - `kustomize` (version `3.2.0`) ([download link](https://github.com/kubernetes-sigs/kustomize/releases/tag/v3.2.0))
 - `kubectl`
