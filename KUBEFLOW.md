@@ -220,8 +220,27 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 sudo apt-get update 
 sudo apt-get install -y kubelet=1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00 
 ```
- 
 
+- Then bootstrap the cluster with kubeadm. Refer to [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/) to know more about the valid args for kubeadm init.
+```sh
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.240.0.0/16
+```
+- Next, set up cluster access for a regular user:
+```sh
+mkdir -p $HOME/.kube
+sudo cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+- Next, check the cluster-info using kubectl:
+```sh
+kubectl cluster-info
+```
+- Last step is to install network plugin (CNI) on the master node:
+ - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
+```sh
+kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml 
+kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+```
  
 
 
