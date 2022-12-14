@@ -113,9 +113,13 @@ sudo apt-get update
 ```
 
 - Disable swap
+
+The idea of kubernetes is to tightly pack instances to as close to 100% utilized as possible. All deployments should be pinned with CPU/memory limits. So if the scheduler sends a pod to a machine it should never use swap at all. You don't want to swap since it'll slow things down.
+Its mainly for performance.
+
 ```sh
-sudo swapoff -a 
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab 
+sudo swapoff -a (This one is for disabling swap in current session)
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab (This one is disabling swap even after rebooting)
 ```
 
 - Install container runtime 
@@ -151,6 +155,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
   
 
 - Create daemon json config file 
+
+Configure the Docker daemon, in particular to use systemd for the management of the container’s cgroups.
 ```sh
 sudo tee /etc/docker/daemon.json <<EOF 
 { 
@@ -181,6 +187,8 @@ sudo modprobe br_netfilter  
   
 
 - Add settings to sysctl 
+
+As a requirement for your Linux Node's iptables to correctly see bridged traffic, you should ensure net.bridge.bridge-nf-call-iptables is set to 1 in your sysctl config fo letting iptables see bridged traffic
 ```sh
 sudo tee /etc/sysctl.d/kubernetes.conf<<EOF 
 net.bridge.bridge-nf-call-ip6tables = 1 
@@ -190,7 +198,7 @@ EOF 
 ```
   
 
-Reload sysctl 
+Reload sysctl to make changes.
 ```sh
 sudo sysctl --system 
 ```
@@ -236,7 +244,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl cluster-info
 ```
 - Last step is to install network plugin (CNI) on the master node:
- - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
+We will be using calico CNI as a network plugin for Kubernetes as we discused earlier.
+    - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
 ```sh
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml 
 kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
