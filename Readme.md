@@ -10,6 +10,8 @@
 - [Kubeflow Installation](#kubeflow-installation)
   * [Prerequisites](#prerequisites)
   * [Kubernetes Installation](#kubernetes-installation)
+  * [Kubernetes Storage](#kubernetes-storage)
+  * [Docker Registry](#docker-registry)
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 
@@ -248,19 +250,97 @@ kubectl cluster-info
 We will be using calico CNI as a network plugin for Kubernetes as we discused earlier.
     - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
 ```sh
-kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml 
-kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml 
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/custom-resources.yaml
 ```
-- We also need a default storage class. For that we will be using the manifest file provided by rancher for [storageclass](https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml).
+### Kubernetes storage
+- Kubeflow uses a default storage class to store data and create persistent volumes. We can either use a local storage like the one given by rancher or an nfs storage for external data persistency.
+#### Local storage
+[storageclass](https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml).
 ```sh
-kubectl create -f https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml
+kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 ```
+
+#### NFS storage:
+First we need to setup an NFS server:
+
+```sh
+sudo apt-get update
+sudo apt install nfs-kernel-server
+```
+
+Next we create the mounting directory for the data storage and change it's permission so that the pod can access it and write data:
+```sh
+sudo mkdir /data -p
+sudo chown nobody:/data
+```
+Next add the directory to the export file for the NFS clients:
+```sh
+sudo vim /etc/exports
+```
+Add this line to the file:
+```sh
+/data *(rw,no_subtree_check,no_root_squash)
+```
+Now enable the service and reload the /etc/exports file:
+```sh
+sudo systemctl enable --now nfs-server
+sudo exportfs -rav
+```
+To verify that everything went correctly, check the mounted directories:
+```sh
+sudo showmount -e localhost
+```
+Next install the NFS client ton every node:
+```sh
+apt install nfs-common
+```
+Now we will create the manifests for the NFS storageclass on the kubernetes cluster.
+You can find the yaml files in [here](https://github.com/KubeHawk/Kubeflow/tree/main/NFS)
+    
+```sh
+kubectl create -f rbac.yaml
+kubectl create -f class.yaml
+kubectl create -f deployment.yaml
+```
+
 After the creation of the storageclass we need to set it up as a default storageclass:
 
 ```sh
 kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
+#### Docker Registry
+We need to setup our local registry to pull and push images faster.
+First we need to add the entry in the /etc/docker/daemon.json file
+
+```sh
+"insecure-registries":["192.168.0.169:5000"]
+```
+The file will look like this 
+
+```sh
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2",
+  "insecure-registries":["192.168.0.169:5000"]
+
+}
+```
+Next we reload the service:
+
+```sh
+systemctl daemon-reload
+```
+Finaly we pull the registry image and assigne a port to communicate with it. 
+
+```sh
+docker run -d -p 5000:5000 --restart=always --name registry registry
+```
 
 ### Install with a single command
 Get the kubeflow repo from [here](https://github.com/kubeflow/manifests#installation).
