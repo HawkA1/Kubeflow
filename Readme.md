@@ -15,6 +15,7 @@
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 - [Spark on Kubernetes](#spark-on-kubernetes)
+  * [Spark local setup](#Spark-local-setup)
 
 <!-- tocstop -->
 
