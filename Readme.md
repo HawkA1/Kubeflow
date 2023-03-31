@@ -367,3 +367,37 @@ To utilize Spark with Kubernetes, you will need:
 - Authority as a cluster administrator
 - Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
 - Basic understanding of Apache Spark and its architecture
+
+### Spark local setup
+Update all system packages: 
+```sh
+sudo apt update
+```
+Install Java JDK on your machine:
+```sh
+sudo apt-get install default-jdk -y
+```
+
+Install Scala:
+```sh
+apt-get install scala -y
+```
+Download your apache spark version:
+```sh
+wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
+```
+Extract the downloaded file:
+```sh
+tar -xvzf spark-3.3.1-bin-hadoop3.tgz
+```
+Move the extracted directory:
+```sh
+sudo mv spark-3.3.1-bin-hadoop3 /opt/spark
+```
+Edit the .bashrc file and define the Apache Spark path:
+```sh
+nano ~/.bashrc
+export SPARK_HOME=/mnt/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+source ~/.bashrc
+```
