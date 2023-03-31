@@ -15,7 +15,9 @@
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 - [Spark on Kubernetes](#spark-on-kubernetes)
-  * [Spark local setup](#Spark-local-setup)
+  * [Spark local setup](#spark-local-setup)
+  * [Spark executors image](#spark-executors-image)
+  * [Spark on Jupyterlab](#spark-on-jupyterlab)
 
 <!-- tocstop -->
 
@@ -368,7 +370,9 @@ To utilize Spark with Kubernetes, you will need:
 - Authority as a cluster administrator
 - Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
 - Basic understanding of Apache Spark and its architecture
-
+We first need a service account for us to submit spark jobs.
+The driver needs to authenticate to the Kubernetes API with a service account that has permission to create pods. Kubeflow sets up a Kubernetes service account called default-editor.
+The namespace (created via Kubeflow) for my Notebook pods is called kubeflow-user-example-com.
 ### Spark local setup
 Update all system packages: 
 ```sh
@@ -402,3 +406,31 @@ export SPARK_HOME=/mnt/spark
 export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 source ~/.bashrc
 ```
+### Spark executors image
+Next we build the executors docker image:
+
+```sh
+cd /opt/spark
+docker build -t {IMAGE_NAME} -f kubernetes/dockerfiles/spark/Dockerfile .
+```
+After this step everything should be on point for the development phase.
+
+### Spark on Jupyterlab
+First you should have the spark binaries installed on the jupyter image.
+```sh
+from spark_submit import SparkJob
+spark_args = {
+    'master': 'k8s://https://192.168.1.74:6443', # Kubernetes Api-Server
+    'deploy_mode': 'cluster',  
+    'spark_home':'/opt/spark', # Location of spark binaries on the jupyter container
+    'name': 'spark-submit-app',
+    'class': 'org.apache.spark.examples.SparkPi',
+    'conf': ["spark.kubernetes.authenticate.driver.serviceAccountName='default-editor'", "spark.kubernetes.namespace='kubeflow-user-example-com'","spark.executor.instances='2'","spark.kubernetes.container.image='axefinance/sparkv1'"],
+    'main_file_args': '1000'
+    }
+main_file = 'local:///opt/spark/examples/jars/spark-examples_2.12-3.3.1.jar'
+app = SparkJob(main_file, **spark_args)
+app.submit()
+```
+![spark](https://user-images.githubusercontent.com/75808939/229124323-110b3457-1e67-4c56-af03-701e5d7c4b0a.png)
+
