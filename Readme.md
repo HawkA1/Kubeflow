@@ -360,4 +360,10 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
 
 ## Spark on Kubernetes
-
+To utilize Spark with Kubernetes, you will need:
+- A Kubernetes cluster that has role-based access controls (RBAC) and DNS services enabled
+- Sufficient cluster resources to be able to run a Spark session (at a practical level, this means at least three nodes with two CPUs and eight gigabytes of free memory)
+- A properly configured kubectl that can be used to interface with the Kubernetes API
+- Authority as a cluster administrator
+- Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
+- Basic understanding of Apache Spark and its architecture
