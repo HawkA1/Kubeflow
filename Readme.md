@@ -14,6 +14,7 @@
   * [Docker Registry](#docker-registry)
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
+- [Spark on Kubernetes](#spark-on-kubernetes)
 
 <!-- tocstop -->
 
@@ -358,5 +359,5 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
 
-
+##Spark on Kubernetes
 
