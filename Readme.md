@@ -417,6 +417,12 @@ After this step everything should be on point for the development phase.
 
 ### Spark on Jupyterlab
 First you should have the spark binaries installed on the jupyter image.
+Also install spark [packages](https://pypi.org/project/spark-submit/) for job submission.
+
+```sh
+pip install spark-submit
+```
+
 ```sh
 from spark_submit import SparkJob
 spark_args = {
