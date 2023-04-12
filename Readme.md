@@ -16,7 +16,6 @@
   * [Install individual components](#install-individual-components)
 - [Spark on Kubernetes](#spark-on-kubernetes)
   * [Spark setup](#spark-setup)
-  * [Spark executors image](#spark-executors-image)
   * [Spark on Jupyterlab](#spark-on-jupyterlab)
 
 <!-- tocstop -->
