@@ -15,7 +15,7 @@
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 - [Spark on Kubernetes](#spark-on-kubernetes)
-  * [Spark local setup](#spark-local-setup)
+  * [Spark setup](#spark-setup)
   * [Spark executors image](#spark-executors-image)
   * [Spark on Jupyterlab](#spark-on-jupyterlab)
 
@@ -373,45 +373,12 @@ To utilize Spark with Kubernetes, you will need:
 We first need a service account for us to submit spark jobs.
 The driver needs to authenticate to the Kubernetes API with a service account that has permission to create pods. Kubeflow sets up a Kubernetes service account called default-editor.
 The namespace (created via Kubeflow) for my Notebook pods is called kubeflow-user-example-com.
-### Spark local setup
-Update all system packages: 
-```sh
-sudo apt update
-```
-Install Java JDK on your machine:
-```sh
-sudo apt-get install default-jdk -y
-```
+### Spark setup
 
-Install Scala:
-```sh
-apt-get install scala -y
-```
-Download your apache spark version:
-```sh
-wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
-```
-Extract the downloaded file:
-```sh
-tar -xvzf spark-3.3.1-bin-hadoop3.tgz
-```
-Move the extracted directory:
-```sh
-sudo mv spark-3.3.1-bin-hadoop3 /opt/spark
-```
-Edit the .bashrc file and define the Apache Spark path:
-```sh
-nano ~/.bashrc
-export SPARK_HOME=/mnt/spark
-export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-source ~/.bashrc
-```
-### Spark executors image
-Next we build the executors docker image:
+Build the executors and driver docker image:
 
 ```sh
-cd /opt/spark
-docker build -t {IMAGE_NAME} -f kubernetes/dockerfiles/spark/Dockerfile .
+docker build -t {IMAGE_NAME} -f spark-image/Dockerfile .
 ```
 After this step everything should be on point for the development phase.
 
