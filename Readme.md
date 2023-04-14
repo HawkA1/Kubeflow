@@ -164,15 +164,15 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 Configure the Docker daemon, in particular to use systemd for the management of the container’s cgroups.
 ```sh
-sudo tee /etc/docker/daemon.json <<EOF 
-{ 
-  "exec-opts": ["native.cgroupdriver=systemd"], 
-  "log-driver": "json-file", 
-  "log-opts": { 
-    "max-size": "100m" 
-  }, 
-  "storage-driver": "overlay2" 
-} 
+sudo tee /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
 EOF
 ```
   
@@ -187,7 +187,7 @@ sudo systemctl enable docker
 
 - Enable kernel modules and add configuration to sysctl 
 ```sh
-sudo modprobe overlay 
+sudo modprobe overlay
 sudo modprobe br_netfilter
 ```
   
@@ -196,17 +196,17 @@ sudo modprobe br_netfilter
 
 As a requirement for your Linux Node's iptables to correctly see bridged traffic, you should ensure net.bridge.bridge-nf-call-iptables is set to 1 in your sysctl config fo letting iptables see bridged traffic
 ```sh
-sudo tee /etc/sysctl.d/kubernetes.conf<<EOF 
-net.bridge.bridge-nf-call-ip6tables = 1 
-net.bridge.bridge-nf-call-iptables = 1 
-net.ipv4.ip_forward = 1 
+sudo tee /etc/sysctl.d/kubernetes.conf<<EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
 EOF
 ```
   
 
 Reload sysctl to make changes.
 ```sh
-sudo sysctl --system 
+sudo sysctl --system
 ```
   
 
@@ -231,7 +231,7 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 
 - Update apt package index, install kubelet, kubeadm and kubectl 
 ```sh
-sudo apt-get update 
+sudo apt-get update
 sudo apt-get install -y kubelet= 1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00
 ```
 
