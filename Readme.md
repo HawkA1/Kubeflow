@@ -137,26 +137,26 @@ sudo apt-get install \ 
     ca-certificates \ 
     curl \ 
     gnupg \ 
-    lsb-release 
+    lsb-release
 ```
   
 Add Docker’s official GPG key: 
 ```sh
-sudo mkdir -p /etc/apt/keyrings 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg 
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
   
 Set up the repository: 
 ```sh
 echo \ 
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \ 
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 
 Install Docker Engine 
 ```sh
-sudo apt-get update 
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin 
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
   
 
@@ -173,22 +173,22 @@ sudo tee /etc/docker/daemon.json <<EOF 
   }, 
   "storage-driver": "overlay2" 
 } 
-EOF 
+EOF
 ```
   
 
 - Start and enable Services 
 ```sh
-sudo systemctl daemon-reload 
-sudo systemctl restart docker 
-sudo systemctl enable docker 
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo systemctl enable docker
 ```
   
 
 - Enable kernel modules and add configuration to sysctl 
 ```sh
 sudo modprobe overlay 
-sudo modprobe br_netfilter  
+sudo modprobe br_netfilter
 ```
   
 
@@ -200,7 +200,7 @@ sudo tee /etc/sysctl.d/kubernetes.conf<<EOF 
 net.bridge.bridge-nf-call-ip6tables = 1 
 net.bridge.bridge-nf-call-iptables = 1 
 net.ipv4.ip_forward = 1 
-EOF 
+EOF
 ```
   
 
@@ -212,27 +212,27 @@ sudo sysctl --system 
 
 - Update the apt package index and install packages needed to use the Kubernetes 
 ```sh
-sudo apt-get update 
-sudo apt-get install -y apt-transport-https ca-certificates curl 
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
 ```
   
 
 - Download the Google Cloud public signing key: 
 ```sh
-sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg 
+sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 ```
   
 
 - Add the Kubernetes apt repository: 
 ```sh
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list 
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
   
 
 - Update apt package index, install kubelet, kubeadm and kubectl 
 ```sh
 sudo apt-get update 
-sudo apt-get install -y kubelet=1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00 
+sudo apt-get install -y kubelet= 1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00
 ```
 
 - Then bootstrap the cluster with kubeadm. Refer to [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/) to know more about the valid args for kubeadm init.
@@ -253,8 +253,8 @@ kubectl cluster-info
 We will be using calico CNI as a network plugin for Kubernetes as we discused earlier.
     - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
 ```sh
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml 
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/custom-resources.yaml
 ```
 ### Kubernetes storage
 - Kubeflow uses a default storage class to store data and create persistent volumes. We can either use a local storage like the one given by rancher or an nfs storage for external data persistency.
@@ -265,6 +265,10 @@ kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provision
 ```
 
 #### NFS storage:
+Network File Sharing (NFS) is a protocol that allows you to share directories and files with other Linux clients over a network. Shared directories are typically created on a file server, running the NFS server component. Users add files to them, which are then shared with other users who have access to the folder.
+
+An NFS file share is mounted on a client machine, making it available just like folders the user created locally. NFS is particularly useful when disk space is limited and you need to exchange public data between client computers.
+
 First we need to setup an NFS server:
 
 ```sh
@@ -382,8 +386,7 @@ docker build -t {IMAGE_NAME} -f spark-image/Dockerfile .
 After this step everything should be on point for the development phase.
 
 ### Spark on Jupyterlab
-First you should have the spark binaries installed on the jupyter image.
-Also install spark [packages](https://pypi.org/project/spark-submit/) for job submission.
+First, install Spark [packages](https://pypi.org/project/spark-submit/) for job submission.
 
 ```sh
 pip install spark-submit
