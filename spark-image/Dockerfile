@@ -21,6 +21,7 @@ WORKDIR /
 # Reset to root to run installation tasks
 USER 0
 ARG spark_uid=185
+#Set permissions in dockerfile
 RUN chmod g+s /opt/spark/work-dir
 WORKDIR /opt/spark/work-dir
 RUN chmod 777 /opt/spark/work-dir
