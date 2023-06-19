@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: kubeflow-user-example-com
+  namespace: kubeflow-user-example-com #Namespace where the spark driver is deployed
   name: spark-historyserver
 spec:
   replicas: 1
@@ -19,16 +19,16 @@ spec:
         - name: spark-historyserver
           image: apache/spark
           imagePullPolicy: IfNotPresent
-          args: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.history.HistoryServer"]
+          args: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.history.HistoryServer"] #Command to start the spark history server
           ports:
             - containerPort: 18080
               name: http
           env:
           - name: SPARK_HISTORY_OPTS
-            value: "-Dspark.history.fs.logDirectory=/logs/logs"
+            value: "-Dspark.history.fs.logDirectory=/logs/logs" #Directory path from where to retreive logs
           volumeMounts:
             - name: spark-volume
-              mountPath: /logs
+              mountPath: /logs #Path where to mount the pvc
           workingDir: /logs
       volumes:  
         - name: spark-volume
@@ -44,6 +44,6 @@ spec:
   type: NodePort
   ports:
     - port: 18080
-      nodePort: 32080
+      nodePort: 32080 #Access port on the local machine
   selector:
     name: spark-historyserver
