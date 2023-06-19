@@ -368,11 +368,12 @@ In this section, we will install each Kubeflow official component (under apps) a
 ## Spark on Kubernetes
 
 For the deployment of spark applications on kubernetes we can use two approaches. Spark-submit or Spark-operator.
+
 ![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/bf6c2ef4-f48e-4c0d-8fe2-abaf3a308e84)
 
 In this documntation we are interested in submitting jobs from kubeflow notebooks or from outside the cluster on a local machine. In order to do that we will use the spark-submit option.
 
-To utilize Spark with Kubernetes, you will need:
+To use Spark with Kubernetes, you will need:
 
    - A Kubernetes cluster that has role-based access controls (RBAC) and DNS services enabled
    - Sufficient cluster resources to be able to run a Spark session (at a practical level, this means at least three nodes with two CPUs and eight gigabytes of free memory)
@@ -380,4 +381,76 @@ To utilize Spark with Kubernetes, you will need:
     Authority as a cluster administrator
    - Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
    - Basic understanding of Apache Spark and its architecture We first need a service account for us to submit spark jobs. The driver needs to authenticate to the Kubernetes API with a service account that has permission to create pods. Kubeflow sets up a Kubernetes service account called default-editor. The namespace (created via Kubeflow) for my Notebook pods is called kubeflow-user-example-com.
+
+We will discuss everything in the example below for better understanding.
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/8f6ce2cf-d6f2-4613-b668-f02891b7c2b8)
+
+```sh
+#!/bin/bash
+PVC_NAME=spark-volume #Name of the pvc created on kubernetes that contains data volume and dependencies for the spark app and spark history server.
+MOUNT_PATH=/opt/spark/work-dir #The path we use on the driver and executors pod to mount data and save logs.
+/opt/spark/bin/spark-submit \
+  --master k8s://https://192.168.0.111:6443 \ #Sepcifie the kubernetes api-server ip
+  --deploy-mode cluster  \ #Deploy mode (Cluster or Client)
+  --name sparkpi1 \ #Spark application name
+  --conf spark.kubernetes.authenticate.driver.serviceAccountName=default-editor  \ #The service account to submit spark app (The service account should have the right permissions)
+  --conf spark.kubernetes.namespace=kubeflow-user-example-com  \ #Same namespace as the pvc
+  --conf spark.kubernetes.container.image=192.168.0.169:5000/spark-py  \ #Spark driver and executors image
+  --conf spark.eventLog.enabled=true \ 
+  --conf spark.eventLog.dir=/opt/spark/work-dir/logs \ #Path to store logs on the spark driver pod
+  --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.${PVC_NAME}.mount.path=${MOUNT_PATH} \ #Path to mount data on spark driver pod
+  --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.${PVC_NAME}.options.claimName=${PVC_NAME} \ #Name of pvc to use to mount data from it
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${PVC_NAME}.mount.path=${MOUNT_PATH} \ #Path to mount data on spark executors pod
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${PVC_NAME}.options.claimName=${PVC_NAME} \ #Name of pvc to use to mount data from it
+  --verbose \ 
+  local:////opt/spark/work-dir/khouloud.py #App to execute with full path on the spark driver pod
+```
+
+Before submitting the job we should:
+    
+   - Create the pvc and assinge it to the kubeflow user, and give right permissions to the logs file.
+   - Create the spark image to use for spark driver and executor pods.
+   - Deploy the spark history server and configure both kubernetes and istio authorizations (RBAC).
+
+We will start with the persistantVolumeClaim:
+
+```sh
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spark-volume
+  namespace: kubeflow-user-example-com
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs-client
+  volumeMode: Filesystem
+```
+This spark pvc will use the NFS storage class we already created. Use ReadWriteMany in accessModes in order to give all executors to write and read at the same time.
+
+For each user that wants to use the spark pvc to mount data volume we use this configuration.
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/5bea3812-1d72-4e83-8ab3-2790b4e8326b)
+
+Next go to the NFS server under the directory of the kubeflow user and set permissions.
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/3a2233db-e194-41c1-ba02-965bf247a4d2)
+
+```sh
+sudo chmod g+rwxs -R logs #Give read and write permissions to the group for all files and directories within the "logs" directory. Additionally, it sets the setgid permission, ensuring that any new files or directories created within "logs" will inherit the group ownership.
+sudo setfacl -R -m o:rwx logs #Add read, write, and execute permissions for "other" or "everyone" to all files and directories within the "logs" directory, including newly created ones.
+```
+
+The spark image used for driver and executors pod can be found [here](https://github.com/KubeHawk/Kubeflow/blob/main/spark-image/Dockerfile).
+
+Now we are only left with the deployment of the psark history server.
+You can find all the necessary yaml files in [here](https://github.com/KubeHawk/Kubeflow/tree/main/Spark-history-server)
+
+The yaml file [History-server.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/History-server.yaml) contain the deployment and service to expose the UI of spark history server.
+The yaml file [isitio-rule.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/isitio-rule.yaml) contain the rules for accessing the UI through istio authorization.
+
 
