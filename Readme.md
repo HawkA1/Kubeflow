@@ -413,7 +413,7 @@ Before submitting the job we should:
    - Create the spark image to use for spark driver and executor pods.
    - Deploy the spark history server and configure both kubernetes and istio authorizations (RBAC).
 
-We will start with the persistantVolumeClaim:
+We will start with the [persistantVolumeClaim](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/pvc.yaml):
 
 ```sh
 apiVersion: v1
@@ -451,6 +451,7 @@ Now we are only left with the deployment of the psark history server.
 You can find all the necessary yaml files in [here](https://github.com/KubeHawk/Kubeflow/tree/main/Spark-history-server)
 
 The yaml file [History-server.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/History-server.yaml) contain the deployment and service to expose the UI of spark history server.
+
 The yaml file [isitio-rule.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/isitio-rule.yaml) contain the rules for accessing the UI through istio authorization.
 
 
