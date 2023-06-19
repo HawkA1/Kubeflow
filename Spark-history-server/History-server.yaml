@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubeflow-user-example-com
+  name: spark-historyserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: spark-historyserver
+  template:
+    metadata:
+      namespace: kubeflow-user-example-com
+      labels:
+        app: spark-historyserver
+        name: spark-historyserver
+    spec:
+      containers:
+        - name: spark-historyserver
+          image: apache/spark
+          imagePullPolicy: IfNotPresent
+          args: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.history.HistoryServer"]
+          ports:
+            - containerPort: 18080
+              name: http
+          env:
+          - name: SPARK_HISTORY_OPTS
+            value: "-Dspark.history.fs.logDirectory=/logs/logs"
+          volumeMounts:
+            - name: spark-volume
+              mountPath: /logs
+          workingDir: /logs
+      volumes:  
+        - name: spark-volume
+          persistentVolumeClaim:
+            claimName: spark-volume
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kubeflow-user-example-com
+  name: spark-historyserver
+spec:
+  type: NodePort
+  ports:
+    - port: 18080
+      nodePort: 32080
+  selector:
+    name: spark-historyserver
