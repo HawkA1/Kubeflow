@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: history-server
+  namespace: kubeflow-user-example-com
+spec:
+  selector:
+    matchLabels:
+      app: spark-historyserver
+  action: ALLOW
+  rules:
+  - to:
+    - operation:
+        methods: ["GET"]
