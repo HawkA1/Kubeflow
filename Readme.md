@@ -19,7 +19,7 @@
 <!-- tocstop -->
 
 ## Overview
-This documentation is for anyone trying to build a [Kubernetes](https://kubernetes.io/docs/home/) based environment fo machine learning using [Kubeflow](https://www.kubeflow.org/docs/started/introduction/).
+This documentation is for anyone trying to setup a machine learning environment with [Kubeflow](https://www.kubeflow.org/docs/started/introduction/) and [Apache Spark](https://spark.apache.org/docs/latest/running-on-kubernetes.html) on [Kubernetes](https://kubernetes.io/docs/home/) based environment fo machine learning using [Kubeflow](https://www.kubeflow.org/docs/started/introduction/).
 
 The Kubeflow project is dedicated to making deployments of machine learning (ML) workflows on Kubernetes simple, portable and scalable. Kubeflow is a platform for data scientists who want to build and experiment with ML pipelines. Kubeflow is also for ML engineers and operational teams who want to deploy ML systems to various environments for development, testing, and production-level serving.
 
@@ -109,7 +109,7 @@ This section is about kubeflow components installation. We will discuss every as
 - `kubectl`
 
 ### Kubernetes Installation
-This section is needed for Kubernetes installation.
+This section is needed for Kubernetes cluster setup.
 
 - Update server
 ```sh
@@ -364,6 +364,9 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
 
 ## Spark on Kubernetes
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/3656b2e2-0e82-4935-92b5-48d5483dcdef)
+
 
 For the deployment of spark applications on kubernetes we can use two approaches. Spark-submit or Spark-operator.
 
