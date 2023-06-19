@@ -11,4 +11,4 @@ spec:
   rules:
   - to:
     - operation:
-        methods: ["GET"]
+        methods: ["GET"] #Methods we allow on spark-historyserver through Istio AuthorizationPolicy
