@@ -15,8 +15,6 @@
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
 - [Spark on Kubernetes](#spark-on-kubernetes)
-  * [Spark setup](#spark-setup)
-  * [Spark on Jupyterlab](#spark-on-jupyterlab)
 
 <!-- tocstop -->
 
@@ -29,7 +27,7 @@ The Kubeflow project is dedicated to making deployments of machine learning (ML)
 For this project environment we used:
 - 3 Ubuntu 22.04 Servers. 
 - 3 VMs with Intel(R) Core (TM) i7-4790 CPU @ 3.60GHz and 16GB RAM DDR3.
-- `Master node IP:` 192.168.1.74
+- `Master node IP:` 192.168.0.111
 - `Worker1 node IP:` 192.168.0.169
 - `Worker2 node IP:` 192.168.1.35
 
@@ -411,7 +409,7 @@ Before submitting the job we should:
     
    - Create the pvc and assinge it to the kubeflow user, and give right permissions to the logs file.
    - Create the spark image to use for spark driver and executor pods.
-   - Deploy the spark history server and configure both kubernetes and istio authorizations (RBAC).
+   - Deploy the spark history server and configure istio authorizations (RBAC).
 
 We will start with the [persistantVolumeClaim](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/pvc.yaml):
 
