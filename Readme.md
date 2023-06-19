@@ -366,46 +366,18 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
 
 ## Spark on Kubernetes
+
+For the deployment of spark applications on kubernetes we can use two approaches. Spark-submit or Spark-operator.
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/bf6c2ef4-f48e-4c0d-8fe2-abaf3a308e84)
+
+In this documntation we are interested in submitting jobs from kubeflow notebooks or from outside the cluster on a local machine. In order to do that we will use the spark-submit option.
+
 To utilize Spark with Kubernetes, you will need:
-- A Kubernetes cluster that has role-based access controls (RBAC) and DNS services enabled
-- Sufficient cluster resources to be able to run a Spark session (at a practical level, this means at least three nodes with two CPUs and eight gigabytes of free memory)
-- A properly configured kubectl that can be used to interface with the Kubernetes API
-- Authority as a cluster administrator
-- Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
-- Basic understanding of Apache Spark and its architecture
-We first need a service account for us to submit spark jobs.
-The driver needs to authenticate to the Kubernetes API with a service account that has permission to create pods. Kubeflow sets up a Kubernetes service account called default-editor.
-The namespace (created via Kubeflow) for my Notebook pods is called kubeflow-user-example-com.
-### Spark setup
 
-Build the executors and driver docker image:
-
-```sh
-docker build -t {IMAGE_NAME} -f spark-image/Dockerfile .
-```
-After this step everything should be on point for the development phase.
-
-### Spark on Jupyterlab
-First, install Spark [packages](https://pypi.org/project/spark-submit/) for job submission.
-
-```sh
-pip install spark-submit
-```
-
-```sh
-from spark_submit import SparkJob
-spark_args = {
-    'master': 'k8s://https://192.168.1.74:6443', # Kubernetes Api-Server
-    'deploy_mode': 'cluster',  
-    'spark_home':'/opt/spark', # Location of spark binaries on the jupyter container
-    'name': 'spark-submit-app',
-    'class': 'org.apache.spark.examples.SparkPi',
-    'conf': ["spark.kubernetes.authenticate.driver.serviceAccountName='default-editor'", "spark.kubernetes.namespace='kubeflow-user-example-com'","spark.executor.instances='2'","spark.kubernetes.container.image='axefinance/sparkv1'"],
-    'main_file_args': '1000'
-    }
-main_file = 'local:///opt/spark/examples/jars/spark-examples_2.12-3.3.1.jar'
-app = SparkJob(main_file, **spark_args)
-app.submit()
-```
-![spark](https://user-images.githubusercontent.com/75808939/229124323-110b3457-1e67-4c56-af03-701e5d7c4b0a.png)
+   - A Kubernetes cluster that has role-based access controls (RBAC) and DNS services enabled
+   - Sufficient cluster resources to be able to run a Spark session (at a practical level, this means at least three nodes with two CPUs and eight gigabytes of free memory)
+   - A properly configured kubectl that can be used to interface with the Kubernetes API
+    Authority as a cluster administrator
+   - Access to a public Docker repository or your cluster configured so that it is able to pull images from a private repository
+   - Basic understanding of Apache Spark and its architecture We first need a service account for us to submit spark jobs. The driver needs to authenticate to the Kubernetes API with a service account that has permission to create pods. Kubeflow sets up a Kubernetes service account called default-editor. The namespace (created via Kubeflow) for my Notebook pods is called kubeflow-user-example-com.
 
