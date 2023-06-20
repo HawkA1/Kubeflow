@@ -451,7 +451,8 @@ Now we are only left with the deployment of the psark history server.
 You can find all the necessary yaml files in [here](https://github.com/KubeHawk/Kubeflow/tree/main/Spark-history-server)
 
 The yaml file [History-server.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/History-server.yaml) contain the deployment and service to expose the UI of spark history server.
+Because isitio set an authorizationpolicy global-deny-all by default we should set manualy a rule to hndle requests towards spark history server.
 
-The yaml file [isitio-rule.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/isitio-rule.yaml) contain the rules for accessing the UI through istio authorization.
+The yaml file [isitio-rule.yaml](https://github.com/KubeHawk/Kubeflow/blob/main/Spark-history-server/isitio-rule.yaml) contain the rules for accessing the spark history server UI through istio authorization.
 
 
