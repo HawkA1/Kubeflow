@@ -52,7 +52,6 @@ The Kubeflow Pipelines platform consists of:
 - An engine for scheduling multi-step ML workflows.
 - An SDK for defining and manipulating pipelines and components.
 - Notebooks for interacting with the system using the SDK.
-![image](https://user-images.githubusercontent.com/75808939/206500339-c2651a3e-93c6-4fcf-a45c-eea5a6ceca54.png)
 
 
 #### Katib
@@ -362,6 +361,9 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 ### Install individual components
 
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/a54a7873-b7e8-42d9-8c82-166a5e53c1a1)
+
 
 ## Spark on Kubernetes
 
