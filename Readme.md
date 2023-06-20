@@ -365,8 +365,7 @@ In this section, we will install each Kubeflow official component (under apps) a
 
 ## Spark on Kubernetes
 
-![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/3656b2e2-0e82-4935-92b5-48d5483dcdef)
-
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/6f00bf2f-e221-494b-afdd-b70ab2dea9f7)
 
 For the deployment of spark applications on kubernetes we can use two approaches. Spark-submit or Spark-operator.
 
