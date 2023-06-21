@@ -366,11 +366,11 @@ In this section, we will install each Kubeflow official component (under apps) a
 
 ## Kubeflow Authentication Architecture
 
-![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/a54a7873-b7e8-42d9-8c82-166a5e53c1a1)
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/17688a5c-35c5-4497-88db-6215b40b2aca)
 
 ## Kubeflow Workflow Architecture
 
-![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/590922e1-57f3-4cb6-bf00-d7ebc092e695)
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/bf194d14-01d6-46d3-adea-066212c17b0e)
 
 ## Spark on Kubernetes
 
