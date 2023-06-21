@@ -14,8 +14,8 @@
   * [Docker Registry](#docker-registry)
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
-- [Kubeflow Authentication Architecture](kubeflow-authentication-architecture)
-- [Kubeflow Workflow Architecture](kubeflow-workflow-architecture)
+- [Kubeflow Authentication Architecture](#kubeflow-authentication-architecture)
+- [Kubeflow Workflow Architecture](#kubeflow-workflow-architecture)
 - [Spark on Kubernetes](#spark-on-kubernetes)
 
 <!-- tocstop -->
