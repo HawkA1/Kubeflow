@@ -14,6 +14,8 @@
   * [Docker Registry](#docker-registry)
   * [Install with a single command](#install-with-a-single-command)
   * [Install individual components](#install-individual-components)
+- [Kubeflow Authentication Architecture](kubeflow-authentication-architecture)
+- [Kubeflow Workflow Architecture](kubeflow-workflow-architecture)
 - [Spark on Kubernetes](#spark-on-kubernetes)
 
 <!-- tocstop -->
@@ -362,8 +364,13 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 
 In this section, we will install each Kubeflow official component (under apps) and each common service (under common) separately, using just kubectl and kustomize. See kubeflow [repo](https://github.com/kubeflow/manifests#installation).
 
+## Kubeflow Authentication Architecture
+
 ![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/a54a7873-b7e8-42d9-8c82-166a5e53c1a1)
 
+## Kubeflow Workflow Architecture
+
+![image](https://github.com/KubeHawk/Kubeflow/assets/75808939/590922e1-57f3-4cb6-bf00-d7ebc092e695)
 
 ## Spark on Kubernetes
 
