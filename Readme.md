@@ -388,7 +388,7 @@ cd manifests
 You can install all Kubeflow official components (residing under apps) and all common services (residing under common) in [kubeflow manifests repo](https://github.com/kubeflow/manifests#installation) using the following command:
 
 ```sh
-while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
+while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
 ```
 ### Install individual components
 
