@@ -191,7 +191,7 @@ sudo systemctl enable docker
 ```
 - Install cri-o for kubernetes containers
   to do so, we need to install GO first:
-  
+  first download the go binary from here: ([download link](https://go.dev/doc/install))
   ```sh
   rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.2.linux-amd64.tar.gz
   export PATH=$PATH:/usr/local/go/bin
