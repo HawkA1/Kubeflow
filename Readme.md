@@ -106,9 +106,17 @@ This section is about kubeflow components installation. We will discuss every as
 ### Prerequisites
 - :warning: Kubeflow can only be installed on a Kubernetes cluster.
 - `Kubernetes` (up to `1.22`) with a default [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
-- `kustomize` (version `3.2.0`) ([download link](https://github.com/kubernetes-sigs/kustomize/releases/tag/v3.2.0))
+- `kustomize` (version `3.2.0`) ([download link](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.0/kustomize_v5.0.0_linux_amd64.tar.gz))
 - `kubectl`
 
+To install kustomize follow these steps:
+```sh
+wget https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.5/kustomize_v3.8.5_linux_amd64.tar.gz
+tar zxf kustomize_v3.8.5_linux_amd64.tar.gz 
+sudo mv  kustomize /usr/local/bin
+which kustomize
+kustomize version
+```
 ### Kubernetes Installation
 This section is needed for Kubernetes cluster setup.
 
@@ -174,7 +182,6 @@ sudo tee /etc/docker/daemon.json <<EOF
 }
 EOF
 ```
-  
 
 - Start and enable Services 
 ```sh
@@ -182,7 +189,30 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 sudo systemctl enable docker
 ```
-  
+- Install cri-o for kubernetes containers
+  to do so, we need to install GO first:
+  
+  ```sh
+  rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.2.linux-amd64.tar.gz
+  export PATH=$PATH:/usr/local/go/bin
+  go version
+  ```
+ If everything is looking good, we proceed with the mirantis docker container installation:
+
+ ```sh
+ git clone https://github.com/Mirantis/cri-dockerd.git
+ cd cri-dockerd
+ make cri-dockerd
+
+ # Run these commands as root
+ cd cri-dockerd
+ mkdir -p /usr/local/bin
+ install -o root -g root -m 0755 cri-dockerd /usr/local/bin/cri-dockerd
+ install packaging/systemd/* /etc/systemd/system
+ sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+ systemctl daemon-reload
+ systemctl enable --now cri-docker.socket
+ ```
 
 - Enable kernel modules and add configuration to sysctl 
 ```sh
@@ -231,7 +261,7 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 - Update apt package index, install kubelet, kubeadm and kubectl 
 ```sh
 sudo apt-get update
-sudo apt-get install -y kubelet= 1.22.10-00 kubeadm= 1.22.10-00 kubectl= 1.22.10-00
+sudo apt-get install -y kubelet= 1.25.0-00 kubeadm= 1.25.0-00 kubectl= 1.25.0-00
 ```
 
 - Then bootstrap the cluster with kubeadm. Refer to [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/) to know more about the valid args for kubeadm init.
@@ -252,8 +282,8 @@ kubectl cluster-info
 We will be using calico CNI as a network plugin for Kubernetes as we discused earlier.
     - :warning: You need to configure custom-resources.yaml before applying it. Change Pod-cidr in the manifest file.
 ```sh
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
 ```
 ### Kubernetes storage
 - Kubeflow uses a default storage class to store data and create persistent volumes. We can either use a local storage like the one given by rancher or an nfs storage for external data persistency.
@@ -313,7 +343,7 @@ kubectl create -f deployment.yaml
 After the creation of the storageclass we need to set it up as a default storageclass:
 
 ```sh
-kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 #### Docker Registry
